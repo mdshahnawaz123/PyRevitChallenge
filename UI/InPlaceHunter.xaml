@@ -1,0 +1,36 @@
+﻿<Window x:Class="PyRevitChallenge.UI.InPlaceHunter"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="BIM Digital Design"
+        Height="320"
+        Width="300"
+        ResizeMode="NoResize">
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <TextBlock Text="In-Place Elements"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,10"/>
+
+        <!-- List -->
+        <ListBox Grid.Row="1"
+                 x:Name="InPlaceList"
+                 DisplayMemberPath="Name"
+                 SelectionMode="Extended"/>
+
+        <!-- Button -->
+        <Button Grid.Row="2"
+                Content="Show in Revit"
+                Height="30"
+                Margin="0,10,0,0"
+                Click="SelectButton_Click"/>
+    </Grid>
+</Window>
