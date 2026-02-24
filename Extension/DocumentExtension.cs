@@ -14,5 +14,22 @@ namespace PyRevitChallenge.Extension
                 .Where(x => x.Symbol.Family.IsInPlace)
                 .ToList();
         }
+
+        public static List<FamilyInstance> GetFamilyInstances(this Document doc)
+        {
+            return new FilteredElementCollector(doc)
+                .OfClass(typeof(FamilyInstance))
+                .WhereElementIsNotElementType()
+                .Cast<FamilyInstance>()
+                .ToList();
+        }
+
+        public static List<View> GetViews(this Document doc)
+        {
+            return new FilteredElementCollector(doc)
+                .OfClass(typeof(View))
+                .Cast<View>()
+                .ToList();
+        }
     }
 }
