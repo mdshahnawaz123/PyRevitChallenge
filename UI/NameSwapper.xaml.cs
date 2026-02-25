@@ -1,6 +1,5 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using PyRevitChallenge.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,37 +21,32 @@ namespace PyRevitChallenge.UI
             LoadViews();
         }
 
+        
         private void LoadViews()
         {
-            var viewList = doc.GetViews();
-            ViewTree.ItemsSource = viewList;
+            var views = new FilteredElementCollector(doc)
+                .OfClass(typeof(View))
+                .Cast<View>()
+                .Where(v => !v.IsTemplate)
+                .OrderBy(v => v.Name)
+                .ToList();
+
+            ViewTree.ItemsSource = views;
             ViewTree.DisplayMemberPath = "Name";
         }
 
+        
         private void SelectButton_Click(object sender, RoutedEventArgs e)
         {
             if (doc == null) return;
 
-            var allowedTypes = new HashSet<ViewType>
-            {
-                ViewType.FloorPlan,
-                ViewType.CeilingPlan,
-                ViewType.AreaPlan,
-                ViewType.DrawingSheet,
-                ViewType.Elevation,
-                ViewType.DraftingView,
-                ViewType.ThreeD,
-                ViewType.Section
-            };
-
             var selectedViews = ViewTree.SelectedItems
                 .OfType<View>()
-                .Where(v => allowedTypes.Contains(v.ViewType))
                 .ToList();
 
             if (!selectedViews.Any())
             {
-                TaskDialog.Show("Name Swapper", "No valid views selected.");
+                TaskDialog.Show("Name Swapper", "No views selected.");
                 return;
             }
 
@@ -62,25 +56,35 @@ namespace PyRevitChallenge.UI
 
                 foreach (var view in selectedViews)
                 {
-                    var viewName = view.Name;
+                    var originalName = view.Name;
 
+                    // Skip if find text not present
                     if (!string.IsNullOrEmpty(Text_Find.Text) &&
-                        viewName.Contains(Text_Find.Text))
-                    {
-                        var newName =
-                            $"{Text_Prefix.Text}" +
-                            $"{viewName.Replace(Text_Find.Text, Text_RePlace.Text)}" +
-                            $"{Text_Sufix.Text}";
+                        !originalName.Contains(Text_Find.Text))
+                        continue;
 
-                        try
+                    var newName =
+                        $"{Text_Prefix.Text}" +
+                        $"{originalName.Replace(Text_Find.Text, Text_RePlace.Text)}" +
+                        $"{Text_Sufix.Text}";
+
+                    try
+                    {
+                        // 🔥 SPECIAL HANDLING FOR SHEETS
+                        if (view.ViewType == ViewType.DrawingSheet)
+                        {
+                            var sheet = view as ViewSheet;
+                            sheet.Name = newName; // rename sheet title
+                        }
+                        else
                         {
                             view.Name = newName;
                         }
-                        catch (Exception ex)
-                        {
-                            TaskDialog.Show("Rename Failed",
-                                $"{viewName}\n\n{ex.Message}");
-                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        TaskDialog.Show("Rename Failed",
+                            $"{originalName}\n\n{ex.Message}");
                     }
                 }
 
@@ -93,7 +97,7 @@ namespace PyRevitChallenge.UI
 
         private void ViewTree_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            
+            // Optional: preview logic later
         }
     }
 }

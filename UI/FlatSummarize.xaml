@@ -25,12 +25,12 @@
 
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Room"
+                    <GridViewColumn Header="Room Name"
                                     DisplayMemberBinding="{Binding Name}"
                                     Width="160"/>
-                    <GridViewColumn Header="Number"
+                    <GridViewColumn Header="Room Number"
                                     DisplayMemberBinding="{Binding Number}"
-                                    Width="80"/>
+                                    Width="160"/>
                 </GridView>
             </ListView.View>
         </ListView>

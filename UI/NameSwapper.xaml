@@ -10,14 +10,14 @@
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
 
-        <!-- LEFT: Revit-style Browser -->
+        
         <ListView x:Name="ViewTree"
                   Grid.Column="0"
                   Margin="0,0,10,0"
                   SelectionMode="Extended"
                   SelectionChanged="ViewTree_SelectionChanged"/>
 
-        <!-- RIGHT: Rename Controls -->
+        
         <StackPanel Grid.Column="1">
             <TextBlock Text="Name Swapper"
                        FontSize="16"

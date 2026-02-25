@@ -1,26 +1,12 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using PyRevitChallenge.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PyRevitChallenge.UI
 {
-    /// <summary>
-    /// Interaction logic for DoorSwing.xaml
-    /// </summary>
     public partial class DoorSwing : Window
     {
         private Document doc;
@@ -31,7 +17,7 @@ namespace PyRevitChallenge.UI
             InitializeComponent();
             this.doc = doc;
             this.uidoc = uidoc;
-            info();
+            LoadDoors();
         }
 
         public void SelectButton_Click(object sender, RoutedEventArgs e)
@@ -42,27 +28,15 @@ namespace PyRevitChallenge.UI
                 return;
             }
 
-            var selectedIds = new List<ElementId>();
+            var selectedIds = new HashSet<ElementId>();
 
             // Right doors
-            if (RightDoorSwing.SelectedItems.Count > 0)
-            {
-                var rids = RightDoorSwing.SelectedItems
-                    .Cast<FamilyInstance>()
-                    .Select(x => x.Id);
-
-                selectedIds.AddRange(rids);
-            }
+            foreach (FamilyInstance d in RightDoorSwing.SelectedItems)
+                selectedIds.Add(d.Id);
 
             // Left doors
-            if (LeftDoorSwing.SelectedItems.Count > 0)
-            {
-                var lids = LeftDoorSwing.SelectedItems
-                    .Cast<FamilyInstance>()
-                    .Select(x => x.Id);
-
-                selectedIds.AddRange(lids);
-            }
+            foreach (FamilyInstance d in LeftDoorSwing.SelectedItems)
+                selectedIds.Add(d.Id);
 
             if (selectedIds.Count == 0)
             {
@@ -71,14 +45,15 @@ namespace PyRevitChallenge.UI
             }
 
             uidoc.ShowElements(selectedIds);
-            uidoc.Selection.SetElementIds(selectedIds);
+            uidoc.Selection.SetElementIds(selectedIds.ToList());
         }
 
-        public void info()
+        private void LoadDoors()
         {
-            var doors = doc
-                .GetFamilyInstances()
-                .Where(x => x.Category != null && x.Category.Id.Value == (int)BuiltInCategory.OST_Doors)
+            var doors = new FilteredElementCollector(doc)
+                .OfCategory(BuiltInCategory.OST_Doors)
+                .WhereElementIsNotElementType()
+                .Cast<FamilyInstance>()
                 .ToList();
 
             List<FamilyInstance> leftDoors = new List<FamilyInstance>();
@@ -86,23 +61,23 @@ namespace PyRevitChallenge.UI
 
             foreach (var door in doors)
             {
-                var handorientation = door.HandOrientation;
-                var faceorientation = door.FacingOrientation;
+                XYZ hand = door.HandOrientation;
+                XYZ facing = door.FacingOrientation;
 
-                if (Math.Round(handorientation.X, 3) == -1)
-                {
+               
+                var cross = facing.CrossProduct(hand);
+
+                if (cross.Z > 0)
                     leftDoors.Add(door);
-                }
                 else
-                {
                     rightDoors.Add(door);
-                }
             }
 
-            // Bind to UI
             LeftDoorSwing.ItemsSource = leftDoors;
             RightDoorSwing.ItemsSource = rightDoors;
+
+           
+            this.Title = $"Door Swing  |  L:{leftDoors.Count}  R:{rightDoors.Count}";
         }
     }
-
 }
