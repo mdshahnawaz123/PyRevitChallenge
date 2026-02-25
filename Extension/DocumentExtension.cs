@@ -29,7 +29,18 @@ namespace PyRevitChallenge.Extension
             return new FilteredElementCollector(doc)
                 .OfClass(typeof(View))
                 .Cast<View>()
+                .Where(x=>!x.IsTemplate)
                 .ToList();
         }
+
+        public static List<SpatialElement> GetRooms(this Document doc)
+        {
+            return new FilteredElementCollector(doc)
+                .OfClass(typeof(SpatialElement))
+                .Cast<SpatialElement>()
+                .Where(x => x.Category.Id.Value == (int)BuiltInCategory.OST_Rooms)
+                .ToList();
+        }
+
     }
 }

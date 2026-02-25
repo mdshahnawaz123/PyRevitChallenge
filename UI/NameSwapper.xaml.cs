@@ -4,73 +4,95 @@ using PyRevitChallenge.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PyRevitChallenge.UI
 {
-    /// <summary>
-    /// Interaction logic for NameSwapper.xaml
-    /// </summary>
     public partial class NameSwapper : Window
     {
-        private Document doc;
-        private UIDocument uidoc;
-        public NameSwapper(Document doc,UIDocument uidoc)
+        private readonly Document doc;
+        private readonly UIDocument uidoc;
+
+        public NameSwapper(Document doc, UIDocument uidoc)
         {
             InitializeComponent();
             this.doc = doc;
             this.uidoc = uidoc;
-            info();
+            LoadViews();
         }
 
-        public void info()
+        private void LoadViews()
         {
             var viewList = doc.GetViews();
-
             ViewTree.ItemsSource = viewList;
             ViewTree.DisplayMemberPath = "Name";
-
-            var prefix = Text_Prefix.Text;
-            var find = Text_Find.Text;
-            var replace = Text_RePlace;
-            var sufix = Text_Sufix.Text;
         }
 
         private void SelectButton_Click(object sender, RoutedEventArgs e)
         {
-            if(doc == null) return;
+            if (doc == null) return;
 
-            var selectedView = ViewTree.SelectedItems.Cast<View>().ToList();
-
-            foreach (var view in selectedView)
+            var allowedTypes = new HashSet<ViewType>
             {
-                var viewName = view.Name;
+                ViewType.FloorPlan,
+                ViewType.CeilingPlan,
+                ViewType.AreaPlan,
+                ViewType.DrawingSheet,
+                ViewType.Elevation,
+                ViewType.DraftingView,
+                ViewType.ThreeD,
+                ViewType.Section
+            };
 
-                TaskDialog.Show("Message", $"view Name :- {viewName.ToString()}");
+            var selectedViews = ViewTree.SelectedItems
+                .OfType<View>()
+                .Where(v => allowedTypes.Contains(v.ViewType))
+                .ToList();
+
+            if (!selectedViews.Any())
+            {
+                TaskDialog.Show("Name Swapper", "No valid views selected.");
+                return;
             }
-            
+
+            using (var tx = new Transaction(doc, "Rename Views"))
+            {
+                tx.Start();
+
+                foreach (var view in selectedViews)
+                {
+                    var viewName = view.Name;
+
+                    if (!string.IsNullOrEmpty(Text_Find.Text) &&
+                        viewName.Contains(Text_Find.Text))
+                    {
+                        var newName =
+                            $"{Text_Prefix.Text}" +
+                            $"{viewName.Replace(Text_Find.Text, Text_RePlace.Text)}" +
+                            $"{Text_Sufix.Text}";
+
+                        try
+                        {
+                            view.Name = newName;
+                        }
+                        catch (Exception ex)
+                        {
+                            TaskDialog.Show("Rename Failed",
+                                $"{viewName}\n\n{ex.Message}");
+                        }
+                    }
+                }
+
+                tx.Commit();
+            }
+
+            // Refresh UI
+            LoadViews();
         }
 
-        private void ViewTre_SelectionChnaged(object sender, SelectionChangedEventArgs e)
+        private void ViewTree_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(doc == null) return;
-
-            var selectedView = ViewTree.SelectedItems.Cast<View>().ToList();
-
-            foreach(var view in selectedView)
-            {
-
-            }
             
         }
     }
