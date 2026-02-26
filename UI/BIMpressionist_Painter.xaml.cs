@@ -22,8 +22,6 @@ namespace PyRevitChallenge.UI
             this.uidoc = uidoc;
             LoadCategories();
         }
-
-        // ================= LOAD CATEGORIES =================
         private void LoadCategories()
         {
             var cats = doc.GetCategories();
@@ -45,7 +43,7 @@ namespace PyRevitChallenge.UI
             SelectedElementList.DisplayMemberPath = "Name";
         }
 
-        // ================= COLOR PICKER (FINAL FIXED) =================
+    
         private void PickColor_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new System.Windows.Forms.ColorDialog();
@@ -61,8 +59,6 @@ namespace PyRevitChallenge.UI
                 ColorPreview.Background = new SolidColorBrush(_selectedColor);
             }
         }
-
-        // ================= ASSIGN COLOR =================
         private void AssignColor_Click(object sender, RoutedEventArgs e)
         {
             var selectedElements = SelectedElementList.SelectedItems
@@ -76,7 +72,6 @@ namespace PyRevitChallenge.UI
                 _selectedColor.G,
                 _selectedColor.B);
 
-            // Get solid fill pattern (required for shaded views)
             var solidFill = new FilteredElementCollector(doc)
                 .OfClass(typeof(FillPatternElement))
                 .Cast<FillPatternElement>()
@@ -101,7 +96,6 @@ namespace PyRevitChallenge.UI
             }
         }
 
-        // ================= CLEAR OVERRIDE =================
         private void ClearOverride_Click(object sender, RoutedEventArgs e)
         {
             var selectedElements = SelectedElementList.SelectedItems
@@ -124,8 +118,6 @@ namespace PyRevitChallenge.UI
                 t.Commit();
             }
         }
-
-        // ================= SHOW IN REVIT =================
         private void ShowInRevit_Click(object sender, RoutedEventArgs e)
         {
             var ids = SelectedElementList.SelectedItems
@@ -153,14 +145,11 @@ namespace PyRevitChallenge.UI
             uidoc.Selection.SetElementIds(ids);
         }
 
-        // ================= CLEAN EXIT =================
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
 
             var view = uidoc.ActiveView;
-
-            // Reset temp isolate if active
             if (view.IsTemporaryHideIsolateActive())
             {
                 using (var t = new Transaction(doc, "Reset Temp View"))
@@ -170,8 +159,6 @@ namespace PyRevitChallenge.UI
                     t.Commit();
                 }
             }
-
-            // Clear selection
             uidoc.Selection.SetElementIds(new List<ElementId>());
         }
     }
