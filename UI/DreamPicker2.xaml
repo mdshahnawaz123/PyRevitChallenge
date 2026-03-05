@@ -1,0 +1,81 @@
+﻿<Window x:Class="PyRevitChallenge.UI.DreamPicker2"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:PyRevitChallenge.UI"
+        Title="BIM Digital Design"
+        Height="450"
+        Width="400"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid Margin="10">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <Label Grid.Row="0"
+               Content="Dream Picker"
+               FontSize="18"
+               FontWeight="Bold"
+               HorizontalAlignment="Center"
+               Margin="10"/>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="1">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Label Grid.Row="0"
+                   Content="Select your dream element:"
+                   Margin="5"/>
+
+            <Label Grid.Row="1"
+                   Content="Select Category"
+                   Margin="5"/>
+
+            <ComboBox Grid.Row="2"
+                      Name="CatComboBox"
+                      Margin="5"
+                      Height="30"
+                      SelectionChanged="CategorySelectionChanged"/>
+
+            <Label Grid.Row="3"
+                   Content="Select Element"
+                   Margin="5"/>
+
+            <ListView Grid.Row="4"
+                      Name="ElementListView"
+                      Margin="5"
+                      SelectionMode="Extended"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+
+        </Grid>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="10">
+
+            <Button Content="OK"
+                    Width="80"
+                    Margin="5"
+                    Click="SelectElemnt"/>
+
+            <Button Content="Cancel"
+                    Width="80"
+                    Margin="5"
+                    Click="CancelElement"/>
+
+        </StackPanel>
+
+    </Grid>
+</Window>
