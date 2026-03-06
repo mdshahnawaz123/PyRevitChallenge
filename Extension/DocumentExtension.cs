@@ -45,5 +45,26 @@ namespace PyRevitChallenge.Extension
                 .OrderBy(c => c.Name)
                 .ToList();
         }
+
+        public class MasterSelection : ISelectionFilter
+        {
+            public IList<ElementId> ElementIds;
+
+            public MasterSelection(IList<Element> elements)
+            {
+                ElementIds = elements
+                    .Select(x=>x.Id)
+                    .ToList();
+            }
+            public bool AllowElement(Element elem)
+            {
+                return ElementIds.Contains(elem.Id);
+            }
+
+            public bool AllowReference(Reference reference, XYZ position)
+            {
+                return true;
+            }
+        }
     }
 }
