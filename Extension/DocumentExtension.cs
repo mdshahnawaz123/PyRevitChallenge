@@ -66,5 +66,21 @@ namespace PyRevitChallenge.Extension
                 return true;
             }
         }
+
+        public static IList<Workset> GetWorksets(this Document doc)
+        {
+            return new FilteredWorksetCollector(doc)
+                .OfKind(WorksetKind.UserWorkset)
+                .ToWorksets()
+                .ToList();
+        }
+
+        public static IList<Element> GetElementBasedOnWorkSet(this Document doc, Workset workset)
+        {
+            return new FilteredElementCollector(doc)
+                .WherePasses(new ElementWorksetFilter(workset.Id))
+                .ToElements()
+                .ToList();
+        }
     }
 }

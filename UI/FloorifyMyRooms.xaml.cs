@@ -26,7 +26,7 @@ namespace PyRevitChallenge.UI
         // SELECT ROOMS
         private void btnSelectRooms(object sender, RoutedEventArgs e)
         {
-            this.Hide();
+            
             var picked = uidoc.Selection
                 .PickElementsByRectangle(new RoomFilter(), "Select Rooms");
 
@@ -36,7 +36,7 @@ namespace PyRevitChallenge.UI
                 .ToList();
 
             MessageBox.Show(selectedRooms.Count + " Rooms Selected");
-            this.Show();
+            
         }
 
         // CREATE FLOORS
@@ -78,12 +78,12 @@ namespace PyRevitChallenge.UI
 
 
 
-                        FloorType floorType = new FilteredElementCollector(doc)
+                        var floorType = new FilteredElementCollector(doc)
                             .OfClass(typeof(FloorType))
                             .Cast<FloorType>()
                             .First();
 
-                        Level level = doc.GetElement(room.LevelId) as Level;
+                        var level = doc.GetElement(room.LevelId) as Level;
 
                         var lvlid = level.LevelId;
 

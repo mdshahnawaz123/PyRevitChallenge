@@ -103,6 +103,7 @@
     <Compile Include="Command\DreamPicker2.cs" />
     <Compile Include="Command\ClickCounter.cs" />
     <Compile Include="Command\FloorifyMyRooms.cs" />
+    <Compile Include="Command\WorksetGrabber.cs" />
     <Compile Include="Command\_3DIsolationTrapCommand.cs" />
     <Compile Include="Command\RenameCommand.cs" />
     <Compile Include="Command\MasterCommand.cs" />
@@ -117,6 +118,9 @@
     </Compile>
     <Compile Include="UI\FloorifyMyRooms.xaml.cs">
       <DependentUpon>FloorifyMyRooms.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\WorksetGrabber.xaml.cs">
+      <DependentUpon>WorksetGrabber.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\_3DIsolationTrap.xaml.cs">
       <DependentUpon>_3DIsolationTrap.xaml</DependentUpon>
@@ -150,6 +154,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\FloorifyMyRooms.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\WorksetGrabber.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
