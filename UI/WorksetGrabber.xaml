@@ -1,74 +1,73 @@
 ﻿<Window x:Class="PyRevitChallenge.UI.WorksetGrabber"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Workset Grabber" Height="450" Width="650">
+        Title="Workset Grabber"
+        Height="500"
+        Width="700"
+        WindowStartupLocation="CenterScreen">
 
-    <Grid Margin="15">
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Grid Margin="10">
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
 
-        <!-- Workset Label -->
-        <Label Content="Select Worksets:" 
-               FontWeight="Bold"
-               Grid.Row="0" Grid.Column="0"
-               Margin="0,0,0,5"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
+        </Grid.RowDefinitions>
 
-        <!-- Workset List -->
-        <ListView x:Name="WorksetList"
-                  Grid.Row="1" Grid.Column="0"
-                  Margin="0,0,10,0"
-                  SelectionMode="Extended"/>
-
-        <!-- Options Panel -->
-        <GroupBox Header="Options"
-                  Grid.Row="0" Grid.Column="1"
-                  Grid.RowSpan="2"
-                  Margin="5">
-
-            <StackPanel Margin="10">
-
-                <CheckBox Content="Select Only Visible Elements"
-                          Margin="0,5" IsChecked="False"/>
-
-                <CheckBox Content="Include Elements In Linked Models"
-                          Margin="0,5" IsChecked="False"/>
-
-                <CheckBox Content="Zoom To Selected Elements"
-                          Margin="0,5" IsChecked="False"/>
-
-            </StackPanel>
-
+        <!-- WORKSET LIST -->
+        <GroupBox Header="Worksets" Grid.Column="0" Margin="5">
+            <ListBox x:Name="WorksetList"
+                     SelectionChanged="WorksetList_SelectionChanged"/>
         </GroupBox>
 
-        <!-- Bottom Buttons -->
-        <StackPanel Grid.Row="2"
-                    Grid.Column="0"
+        <!-- ELEMENT LIST -->
+        <GroupBox Header="Elements" Grid.Column="1" Margin="5">
+            <Grid>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="30" />
+                </Grid.RowDefinitions>
+
+                <ListBox x:Name="EleWorksetSel"
+                         SelectionMode="Extended"
+                         DisplayMemberPath="Name"
+                         SelectionChanged="EleWorksetSel_SelectionChanged"/>
+
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+
+                    <TextBlock Text="Total:" Margin="5"/>
+                    <TextBlock x:Name="TotalCount" Margin="5"/>
+
+                    <TextBlock Text="Selected:" Margin="5"/>
+                    <TextBlock x:Name="SelectedCount" Margin="5"/>
+
+                </StackPanel>
+
+            </Grid>
+        </GroupBox>
+
+        <!-- BUTTONS -->
+        <StackPanel Grid.Row="1"
                     Grid.ColumnSpan="2"
                     Orientation="Horizontal"
-                    HorizontalAlignment="Right"
-                    Margin="0,10,0,0">
+                    HorizontalAlignment="Right">
 
             <Button Content="Select Elements"
                     Width="120"
-                    Height="30"
-                    Margin="5"/>
+                    Margin="5"
+                    Click="SelectElements_Click"/>
 
             <Button Content="Cancel"
                     Width="80"
-                    Height="30"
-                    Margin="5"/>
+                    Margin="5"
+                    Click="Cancel_Click"/>
 
         </StackPanel>
 
     </Grid>
-
 </Window>

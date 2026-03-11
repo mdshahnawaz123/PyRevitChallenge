@@ -1,44 +1,87 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using PyRevitChallenge.Extension;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PyRevitChallenge.UI
 {
-    /// <summary>
-    /// Interaction logic for WorksetGrabber.xaml
-    /// </summary>
     public partial class WorksetGrabber : Window
     {
         private Document doc;
         private UIDocument uidoc;
-        public WorksetGrabber(Document doc,UIDocument uidoc)
+
+        public WorksetGrabber(Document doc, UIDocument uidoc)
         {
             InitializeComponent();
+
             this.doc = doc;
             this.uidoc = uidoc;
-            info();
+
+            LoadWorksets();
         }
 
-        public void info()
+        private void LoadWorksets()
         {
-            var worksetList = doc.GetWorksets();
-            WorksetList.ItemsSource = worksetList;
+            var worksets = new FilteredWorksetCollector(doc)
+                .OfKind(WorksetKind.UserWorkset)
+                .ToList();
+
+            WorksetList.ItemsSource = worksets;
             WorksetList.DisplayMemberPath = "Name";
-            
+        }
+
+        private void WorksetList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (WorksetList.SelectedItem is Workset selectedWorkset)
+            {
+                var worksetId = selectedWorkset.Id;
+
+                var elements = new FilteredElementCollector(doc)
+                    .WherePasses(new ElementWorksetFilter(worksetId))
+                    .WhereElementIsElementType()
+                    .Where(x => x.Category != null && x.Category.CategoryType == CategoryType.Model)
+                    .ToList();
+
+                EleWorksetSel.ItemsSource = elements;
+
+                TotalCount.Text = elements.Count.ToString();
+                SelectedCount.Text = "0";
+            }
+        }
+
+        private void EleWorksetSel_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedElements = EleWorksetSel
+                .SelectedItems
+                .Cast<Element>()
+                .ToList();
+
+            SelectedCount.Text = selectedElements.Count.ToString();
+        }
+
+        private void SelectElements_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedIds = EleWorksetSel
+                .SelectedItems
+                .Cast<Element>()
+                .Select(x => x.Id)
+                .ToList();
+
+            if (selectedIds.Count == 0)
+            {
+                MessageBox.Show("No elements selected.");
+                return;
+            }
+
+            uidoc.Selection.SetElementIds(selectedIds);
+            uidoc.ShowElements(selectedIds);
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }
