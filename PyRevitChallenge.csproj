@@ -103,6 +103,7 @@
     <Compile Include="Command\DreamPicker2.cs" />
     <Compile Include="Command\ClickCounter.cs" />
     <Compile Include="Command\FloorifyMyRooms.cs" />
+    <Compile Include="Command\Crash_n_Clasher.cs" />
     <Compile Include="Command\WorksetGrabber.cs" />
     <Compile Include="Command\_3DIsolationTrapCommand.cs" />
     <Compile Include="Command\RenameCommand.cs" />
@@ -112,6 +113,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\ClickCounter.xaml.cs">
       <DependentUpon>ClickCounter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\CrashExternal.cs" />
+    <Compile Include="UI\Crash_n_Clasher.xaml.cs">
+      <DependentUpon>Crash_n_Clasher.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\DreamPicker2.xaml.cs">
       <DependentUpon>DreamPicker2.xaml</DependentUpon>
@@ -146,6 +151,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="UI\ClickCounter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Crash_n_Clasher.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

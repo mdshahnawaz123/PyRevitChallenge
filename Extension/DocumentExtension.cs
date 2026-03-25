@@ -82,5 +82,13 @@ namespace PyRevitChallenge.Extension
                 .ToElements()
                 .ToList();
         }
+
+        public static IList<RevitLinkInstance> GetRevitLinkInstance(this Document doc)
+        {
+            return new FilteredElementCollector(doc)
+                .OfClass(typeof(RevitLinkInstance))
+                .OfType<RevitLinkInstance>()
+                .ToList();
+        }
     }
 }
